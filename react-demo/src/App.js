@@ -56,35 +56,42 @@ class App extends Component { //React规定组件要以大写字母开头, 并�
   }
   render(){
     return (
-      <Fragment>
+      // <Fragment> //等价于 <>, 如果你的组件结构,不需要一个最顶层的div来包裹, 可以使用  <Fragment> or <>
+
+      // 因为class是js的关键字,为避免歧义, jsx中的HTML标签或者组件标签 用 className代替 class
+      <div className="block-border">
+        <p>页面就是最大的组件</p>
         <Clock title="这是一个Clock组件" time={this.state.time}/>
 
+        <div className="block-border">
+          <p>这是一个Todo组件</p>
+          <div className="ipt-wrap">
+            <input
+              onKeyUp={this.enter2addItem}  // bind操作被移到了构造函数内
+              onChange={this.getIptVal.bind(this)} // 如果构造函数不手动绑定，则需要显式bind(this)， 思考一下为什么
+              value={this.state.iptVal}
+            />
+            <button
+              className="btn-bgc" // 样式注入方式1, 推荐使用BEM
+              style={{color:'red'}}  // 样式注入方式2,使用对象, 注意内联样式不完全支持所有css样式，如伪类，媒体查询等
+              //  样式注入方式3, css-in-js, 这是一个比较混乱的方案。代码略
+              onClick={this.addItem.bind(this)}
+            > 添加</button>
+          </div>
+          <ul>
+            {this.state.itemList.map((item,index)=>{
+              return (
+                // 1. 改写前
+                // <li onClick={this.delItem.bind(this,index)} key={index}>{item}</li>
 
-        <div className="ipt-wrap">
-          <input 
-            onKeyUp={this.enter2addItem}  // bind操作被移到了构造函数内
-            onChange={this.getIptVal.bind(this)} // 如果构造函数不手动绑定，则需要显式bind(this)， 思考一下为什么
-            value={this.state.iptVal} 
-          /> 
-          <button 
-            className="btn-bgc" // 样式注入方式1, 推荐使用BEM
-            style={{color:'red'}}  // 样式注入方式2,使用对象, 注意内联样式不完全支持所有css样式，如伪类，媒体查询等
-            //  样式注入方式3, css-in-js, 这是一个比较混乱的方案。代码略
-            onClick={this.addItem.bind(this)}
-          > 添加</button>
+                // 2. 改写成组件, (无论是常规变量还是方法，都用props传递)
+                <TodoItem delItem={this.delItem.bind(this)} key={index} val={item} index={index} />
+              )
+            })}
+          </ul>
         </div>
-        <ul>
-          {this.state.itemList.map((item,index)=>{
-            return (
-              // 1. 改写前
-              // <li onClick={this.delItem.bind(this,index)} key={index}>{item}</li>
-              
-              // 2. 改写成组件, (无论是常规变量还是方法，都用props传递)
-              <TodoItem delItem={this.delItem.bind(this)} key={index} val={item} index={index} />
-            )
-          })}
-        </ul>
-      </Fragment>
+        </div>
+      // </Fragment> // 等价于</>
     )
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component, Fragment,useState, useEffect } from 'react';
 
-// function式组件
+// 1.function式组件
 function Clock(props) {
   let [clockTime, setClockTime] = useState((new Date()).toLocaleString());
 
@@ -16,16 +16,14 @@ function Clock(props) {
   },[]);
 
   return (
-    <div>
-      <div>
-        {props.title}
-      </div>
+    <div className="block-border">
+      <p>{props.title}</p>
       {clockTime}
     </div>
   )
 }
 
-// class式组件
+// 2.class式组件
 class Clock2 extends Component{
   constructor(props){
     super(props)
@@ -56,13 +54,12 @@ class Clock2 extends Component{
   }
   render(){
     return (
-      <div>
-        <div>
-          {this.props.title}
-        </div>
+      <div className="block-border">
+        <p>{this.props.title}</p>
         {this.state.clockTime}
       </div>
     )
   }
 }
+// export default Clock
 export default Clock2
