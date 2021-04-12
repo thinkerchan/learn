@@ -80,12 +80,23 @@ class App extends Component { //React规定组件要以大写字母开头, 并�
           </div>
           <ul>
             {this.state.itemList.map((item,index)=>{
+
+              let obj = {
+                delItem: this.delItem.bind(this),
+                key: index,
+                val: item,
+                index: index
+              }
+
               return (
                 // 1. 改写前
                 // <li onClick={this.delItem.bind(this,index)} key={index}>{item}</li>
 
                 // 2. 改写成组件, (无论是常规变量还是方法，都用props传递)
-                <TodoItem delItem={this.delItem.bind(this)} key={index} val={item} index={index} />
+                // <TodoItem delItem={this.delItem.bind(this)} key={index} val={item} index={index} />
+
+                // 2.1 属性简写, 对子组件传递的参数比较多,可以采用传递对象的方式简化处理
+                < TodoItem  {...obj}/>
               )
             })}
           </ul>
