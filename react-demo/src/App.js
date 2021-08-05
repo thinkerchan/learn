@@ -12,7 +12,7 @@ class App extends Component { //React规定组件要以大写字母开头, 并�
       iptVal:'',
     }
 
-    this.enter2addItem = this.enter2addItem.bind(this)
+    this.enter2addItem = this.enter2addItem.bind(this) // 强行修正 this的指向
 
   }
   componentDidMount() {
@@ -67,8 +67,8 @@ class App extends Component { //React规定组件要以大写字母开头, 并�
           <p>这是一个Todo组件</p>
           <div className="ipt-wrap">
             <input
+              onChange={this.getIptVal.bind(this)} // 如果构造函数不手动绑定，则需要显式bind(this)， 思考一下为什么 (this的指向会变, 会指向dom)
               onKeyUp={this.enter2addItem}  // bind操作被移到了构造函数内
-              onChange={this.getIptVal.bind(this)} // 如果构造函数不手动绑定，则需要显式bind(this)， 思考一下为什么
               value={this.state.iptVal}
             />
             <button
