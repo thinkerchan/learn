@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>120行代码理解双向绑定原理</title>
+</head>
+<body>
+  <div id="app">
+    <div>{{ ok }} </div>
+    <div>{{ didi }} </div>
+    <div v-html="msg"></div>
+    <div>
+      <div v-html="msg"></div>
+    </div>
+    <input type="button" value="加个！" v-on:click="click">
+    <input type="text" v-model="msg">
+  </div>
+  <script src="minivue.js"></script>
+  <script>
+    var vm = new miniVue({
+      el: "#app",
+      data: {
+        msg: "<span>hello miniVue</span>",
+        ok:'2333',
+        didi:"滴滴一下"
+      },
+      methods: {
+        click() {
+          this.msg += "!";
+        },
+        click1(){
+          this.ok+="?";
+        }
+      }
+    })
+  </script>
+</body>
+</html>

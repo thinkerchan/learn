@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>检测你画的够不够圆</title>
+  <script>
+  !function(a){var b,c;/Android (\d+\.\d+)/.test(navigator.userAgent)?(b=parseFloat(RegExp.$1),b>2.3?(c=parseInt(window.screen.width)/a,document.write('<meta name="viewport" content="width='+a+",minimum-scale="+c+",maximum-scale="+c+', target-densitydpi=device-dpi">')):document.write('<meta name="viewport" content="width='+a+',target-densitydpi=device-dpi">')):document.write('<meta name="viewport" content="width='+a+',user-scalable=no,target-densitydpi=device-dpi,minimal-ui,viewport-fit=cover">')}(750);
+  </script>
+  <style>
+    *{margin:0;padding:0;user-select:none;}
+    html,body{width:100%;height:100%;      /* overflow: hidden; */position:relative;}
+    body{background-color:#ccc;}
+    .can{  /* box-shadow: 0 0 1px ; */
+    background-color:transparent;position:absolute;top:0;left:0;z-index:10}
+    .cir{width:750px;height:750px;background-color:#f44;      /* border-radius: 50%; */}
+    .btn{border:1px solid;font-size:24px;padding:0 20px;      /* display: block; */margin-bottom:20px;margin-right:20px;}
+    .test{box-shadow:0 0 1px;width:0;height:0;position:absolute;top:10px;left:10px;z-index:100;}
+    #Jcover{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(0,0,0,.3);width:0;height:0;}
+    .info-box{width:100%;position:absolute;left:auto;right:0;bottom:0;z-index:100;font-size:24px;line-height:30px;padding:10px;box-sizing:border-box;background-color:rgba(255,255,255,.4);}
+  </style>
+</head>
+<body>
+  <canvas class="can" id="canvas" width="750" height="750" ></canvas>
+  <div class="cir"></div>
+  <div class="test" id="Jtest"><i id="Jcover"></i></div>
+  <button class="btn" id="Jbtn">计算</button>
+  <button class="btn" id="Jbtn2">重玩</button>
+  <br>
+  <img id="Jimg" alt="">
+  <img id="Jimg2" alt="">
+  <div class="info-box">
+    <p>圆内图形占比: <span id="Jtips"></span>  </p>
+    <p>圆外图形占比: <span id="Jtips2"></span>  </p>
+  </div>
+  <script src="index.js?v=2000"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .video ,.canImg{
+      width: 300px;
+    }
+    .canImg{
+      background-color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <p>图片上传</p>
+  <input type="file" name="file" id="file">
+  <br>
+  <img id="img">
+
+  <p>视频上传, 截图视频首帧</p>
+  <input type="file" name="file2" id="file2">
+  <br>
+  <!-- <video id="video" class="video"></video> -->
+  <br>
+  <img id="Jcover" class="canImg">
+
+  <script>
+    file.addEventListener('change', function (e) {
+      let fileObj = this.files[0]
+      console.log(fileObj);
+
+      let src = URL.createObjectURL(fileObj)
+      console.log(src);
+      img.src = src
+    })
+
+    file2.addEventListener('change', function (e) {
+      let fileObj = this.files[0]
+      let src = URL.createObjectURL(fileObj)
+      setShot(src)
+    })
+
+    function setShot(src){
+      let video = document.createElement('video')
+      video.src = src
+      video.currentTime = 1 // 获取视频第一帧
+      video.addEventListener('loadeddata', (e) => {
+        let can = document.createElement('canvas')
+        let ctx = can.getContext('2d')
+
+        can.width = video.videoWidth
+        can.height = video.videoHeight
+
+        console.log(can.width, can.height);
+        ctx.drawImage(video, 0, 0, can.width, can.height);
+
+        Jcover.src = can.toDataURL('image/jpeg', 0.8)
+        video.remove()
+      })
+    }
+  </script>
+</body>
+
+</html>
