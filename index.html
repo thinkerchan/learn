@@ -10,7 +10,8 @@
   <div id="app">
     <ul v-show="items.length">
       <li v-for="(item,index) of items" :key="index">
-        <a :href="'https://github.com/thinkerchan/learn/tree/master/'+item.name">{{item.name}}</a>
+        <a v-if="localhost" :href="'./'+item.name">{{item.name}}</a>
+        <a v-else :href="'https://github.com/thinkerchan/learn/tree/master/'+item.name">{{item.name}}</a>
       </li>
     </ul>
   </div>
@@ -20,7 +21,8 @@
     new Vue({
       el:"#app",
       data:{
-        items:[]
+        items:[],
+        localhost:  !location.href.indexOf('github.com')>-1,
       },
       created(){
         this.getContent()
