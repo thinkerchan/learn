@@ -6,14 +6,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/vant/2.12.24/index.min.css" rel="stylesheet">
   <style>
     .video ,.canImg{
       width: 300px;
     }
     .canImg{
       background-color: #ccc;
+      width: 200px;
+      display: block;
+      height: 200px;
+      object-fit: scale-down;
+    }
+    .v{
+      width: 100px;
     }
   </style>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vant/2.12.24/vant.min.js"></script>
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script> -->
 </head>
 
 <body>
@@ -21,7 +32,7 @@
   <p>图片上传</p>
   <input type="file" name="file" id="file">
   <br>
-  <img id="img">
+  <img id="img" class="canImg">
 
   <p>视频上传, 截图视频首帧</p>
   <input type="file" name="file2" id="file2">
@@ -30,6 +41,7 @@
   <br>
   <img id="Jcover" class="canImg">
 
+  <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.9.1/vconsole.min.js"></script>
   <script>
     file.addEventListener('change', function (e) {
       let fileObj = this.files[0]
@@ -40,17 +52,46 @@
       img.src = src
     })
 
+  let isVx = navigator.userAgent.indexOf('MicroMessenger') > -1
+  if (0) {
+    document.addEventListener("WeixinJSBridgeReady", function () {
+      console.log('WeixinJSBridgeReady');
+      // video.play()
+      file2.addEventListener('change', function (e) {
+        let fileObj = this.files[0]
+        let src = URL.createObjectURL(fileObj)
+        setShot(src, isVx)
+      })
+    }, false)
+
+  }else{
     file2.addEventListener('change', function (e) {
       let fileObj = this.files[0]
       let src = URL.createObjectURL(fileObj)
-      setShot(src)
+      setShot(src, isVx)
     })
+  }
 
-    function setShot(src){
+    function setShot(src,bool){
       let video = document.createElement('video')
       video.src = src
+      if (bool) {
+        // video.play()
+        // video.pause()
+      }
+      video.autoplay = true;
+      video.preload = "metadata"
       video.currentTime = 1 // 获取视频第一帧
-      video.addEventListener('loadeddata', (e) => {
+      video.classList.add('v')
+      if (bool) {
+        document.body.appendChild(video)
+      }
+
+      vant.Toast('setShot')
+
+      video.addEventListener('loadeddata', (e) => { // ios 浏览器不执行,只能用后端方式
+
+        vant.Toast('loadeddata')
         let can = document.createElement('canvas')
         let ctx = can.getContext('2d')
         can.width = video.videoWidth
@@ -60,9 +101,12 @@
         ctx.drawImage(video, 0, 0, can.width, can.height);
 
         Jcover.src = can.toDataURL('image/jpeg', 0.8)
-        video.remove()
+        // video.remove()
+
       })
     }
+
+    let vConsole = new window.VConsole();
   </script>
 </body>
 
