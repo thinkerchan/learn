@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/vant/2.12.24/index.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .img-cls {
+        width: 90vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <input
+          type="file"
+          name="upFile"
+          id="upFile"
+          @change="changeFile($event)"
+        />
+        <input
+          type="button"
+          name="开始上传"
+          value="uni-sdk上传"
+          @click="uploadFile()"
+        />
+        <br />
+        <input
+          type="button"
+          name="开始上传"
+          value="axios上传"
+          @click="uploadFile2()"
+        />
+        <hr />
+        上传进度:{{filePercent}}%
+
+        <br />
+        <img :src="imgSrc" alt="水印图" class="img-cls" />
+      </div>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vant/2.12.24/vant.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qiniu-js/3.4.0/qiniu.min.js"></script>
+    <script>
+      let app = new Vue({
+        el: "#app",
+        name: "qiniu",
+        data: {
+          token: "",
+          domain: "http://t-qiniu.linkroutes.com",
+          bucket: "testdog-video-test",
+          imgWaterMark:
+            "?imageView2/0/q/75|watermark/2/text/5rWL6K-V54uX/font/6buR5L2T/fontsize/480/fill/I0ZBRUVFRQ==/dissolve/100/gravity/SouthEast/dx/10/dy/10",
+          file: null,
+          videoUrl: null,
+          coverUrl: null,
+          filePercent: 0,
+          imgSrc: "",
+        },
+        created() {
+          this.getToken().then(() => {
+            // this.getList()
+            // return;
+            // this.imgSrc = this.getOnePic("Fkjz485e-C_a2WSTrm0y3Fy7daCu", 1);
+            this.imgSrc = this.getOnePic("FktRqr7aE3UcAM66V916wNV3EDK-", true);
+          });
+        },
+        mounted() {
+          console.log(qiniu);
+        },
+        methods: {
+          getList() {
+            // 前端不能直接获取 资源列表
+            let ax = axios.create({ withCredentials: false });
+            return ax({
+              method: "get",
+              url: this.domain + "/list",
+              params: {
+                bucket: this.bucket,
+              },
+            })
+              .then((data) => {
+                console.log(data.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          getToken() {
+            return axios({
+              method: "get",
+              url: "https://wx.linkroutes.com/qiniu/token.php",
+            })
+              .then((data) => {
+                this.token = data.data;
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          changeFile(e) {
+            this.file = e.target.files[0];
+          },
+          uploadFile() {
+            // sdk上传
+            this.qiniuUpload(this.file, this.token);
+          },
+          uploadFile2() {
+            // axios上传
+            this.axiosUpload(this.file, this.token);
+          },
+          qiniuUpload(file, token) {
+            let _this = this;
+            var config = {
+              useCdnDomain: true,
+            };
+            var putExtra = {
+              fname: "",
+              params: {},
+              mimeType: null,
+            };
+            var observable = qiniu.upload(file, null, token, putExtra, config);
+            var subscription = observable.subscribe({
+              next(res) {
+                _this.filePercent = parseInt(res.total.percent);
+                console.log(_this.filePercent);
+                if (_this.filePercent == 100) {
+                  console.log("success");
+                }
+              },
+              error(err) {
+                console.log(err);
+              },
+              complete(res) {
+                console.log(res.key);
+              },
+            });
+          },
+          getOnePic(key, bool) {
+            let url = "";
+            if (bool) {
+              // 如果资源是公开的,就不需要下载(查看资源)凭据 否则参考: https://developer.qiniu.com/kodo/1202/download-token
+              const imgLink = qiniu.watermark(
+                {
+                  // mode: 1, // 图片水印
+                  // image: 'http://www.b1.qiniudn.com/images/logo-2.png', // 图片水印的Url，mode = 1 时 **必需**
+                  mode: 2, // 文字水印
+                  text: "测试水印",
+                  fontsize: 800,
+                  fill: "#FFFFFF",
+                  dissolve: 50, // 透明度，取值范围1-100，非必需，下同
+                  gravity: "SouthWest", // 水印位置，为以下参数 [NorthWest、North、NorthEast、West、Center、East、SouthWest、South、SouthEast] 之一
+                  dx: 100, // 横轴边距，单位:像素(px)
+                  dy: 100, // 纵轴边距，单位:像素(px)
+                },
+                key,
+                this.domain
+              );
+
+              url = imgLink;
+            } else {
+              url = this.domain + "/" + key;
+            }
+
+            return url;
+          },
+          axiosUpload(file, token) {
+            let _this = this;
+            const axiosInstance = axios.create({ withCredentials: false }); //withCredentials 禁止携带cookie，带cookie在七牛上有可能出现跨域问题
+
+            let data = new FormData();
+            data.append("token", token);
+            data.append("file", file);
+
+            // qiniu.getUploadUrl({
+            // useCdnDomain: true
+            // }, this.token).then(res => {
+            //   console.log(res); // 上传地址可以这么获取
+            // })
+
+            axiosInstance({
+              method: "POST",
+              url: "http://up-z2.qiniup.com", //新上传地址
+              data: data,
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              timeout: 30000, //超时时间，因为图片上传有可能需要很久
+              onUploadProgress: (progressEvent) => {
+                _this.filePercent = Math.round(
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+              },
+            })
+              .then((data) => {
+                console.log(data.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
