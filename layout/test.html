@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- The key "target-densitydpi" is not supported -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>测试DPR 与 1px bug</title>
+  <script>
+    // 以750设计稿为例，计算rem font-size
+    let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+    let ft = (clientWidth / 7.5).toFixed(2);
+    // 设置页面根字号大小
+    document.documentElement.style.fontSize = ft + "px";
+    // html font-size和scale都是可以影响元素尺寸的因素
+    // 假设1rem = 100px, 如果scale为默认值(即scale=1), 则元素尺寸会被放大, 比如375的屏幕放不下750的设计稿,就只能让 html font-size*0.5, 或者是设置scale = 0.5, html font-size:50px
+  </script>
+  <style>
+    *{
+      margin:0;
+      padding: 0;
+    }
+    html{
+      font-size: 50px;
+    }
+
+    .p1{
+      font-size: .24rem;
+    }
+    .img1{
+      width: 7.5rem;
+    }
+
+    .line{
+      width: 375px;
+      height: 30px;
+      background-color: #ccc;
+      border: 1px solid red;
+      /* border: .01rem solid red; */
+      font-size: .24rem;
+    }
+
+    .line1{
+      border-width: 0.5px;
+    }
+
+    .line2{
+      border-width: 1px;
+    }
+
+    .line3{
+      border-width: 0.01rem;
+    }
+
+
+
+  </style>
+</head>
+<body>
+  <p class="p1">测试DPR 与 1px bug</p>
+  <br>
+  <img class="img1" src="http://dummyimage.com/750x400" alt="">
+  <br>
+  <br>
+  <div class="line line1">
+    border 0.5px
+  </div>
+  <br>
+  <div class="line line2">
+    border 1px
+  </div>
+  <br>
+  <div class="line line3">
+    border 2px
+  </div>
+
+
+</body>
+</html>

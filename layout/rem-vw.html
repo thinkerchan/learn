@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VW+REM方案</title>
+  <style>
+    *{
+      margin:0;
+      padding: 0;
+    }
+    html{
+      font-size: calc(100*100vw/750);
+    }
+
+    .p1{
+      font-size: .32rem;
+    }
+    .img1{
+      width: 7.5rem;
+    }
+
+    .line1{
+      border-bottom: .1rem solid #000;
+    }
+
+    .line2{
+      border-bottom: .1rem solid #000;
+    }
+
+    .line{
+      margin-bottom: 5px;
+    }
+
+    .block{
+      width: 375px;
+      height: 1px;
+      background-color: #000;
+
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app">
+    <p class="p1">这是一行句子。</p>
+
+    <div class="line line1"></div>
+    <div class="line line2"></div>
+
+    <img class="img1" src="https://dummyimage.com/750x300" alt="">
+
+    <div class="block"></div>
+  </div>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script>
+    new Vue({
+      el:"#app",
+      data:{
+        items:[],
+        localhost:  !location.href.indexOf('github.com')>-1,
+      },
+      created(){
+      },
+      methods:{
+
+      }
+    })
+  </script>
+</body>
+</html>

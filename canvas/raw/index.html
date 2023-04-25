@@ -10,7 +10,13 @@
     *{margin:0;padding:0;}
     html,body{width:100%;height:100%;position:relative;}
     /* .ball{width:50px;height:50px;border-radius:50%;background:green;position:absolute;top:50%;left:50%;margin-left:-25px;margin-top:-25px;z-index:100;} */
-    .info-box{display:none;}
+    .info-box{display:block;
+      width: 30%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: #ccc;
+    }
 
     .can{
       width: 750px;
@@ -21,7 +27,7 @@
 <body>
   <canvas id="Jcan" class="can"></canvas>
   <div class="ball" id="Jball"></div>
-  <div class="info-box">
+  <div class="info-box" data-target="Jinfo">
     <p>窗口宽高:<span id="tip0"></span></p>
     <p>beta:<span id="tip"></span></p>
     <p>canMove:<span id="tip2"></span></p>

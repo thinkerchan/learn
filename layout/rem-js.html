@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>JS+REM</title>
+  <script type="text/javascript">
+    (function (designWidth) {
+      let doc = document,
+          win = window,
+          docEl = doc.documentElement,
+          metaEl = doc.querySelector('meta[name="viewport"]'),
+          dpr = win.devicePixelRatio || 1,
+          scale = 1/dpr,
+          tid;
+
+      if (!metaEl) {
+        metaEl = doc.createElement("meta");
+        metaEl.setAttribute("name", "viewport");
+        docEl.firstElementChild.appendChild(metaEl);
+      }
+
+      metaEl.setAttribute("content", "width=device-width,user-scalable=no,initial-scale=" + scale + ",maximum-scale=" + scale + ",minimum-scale=" + scale);
+      // 按需添加 minimal-ui 隐藏ios顶部的地址栏与底部的导航栏
+
+      function refreshRem() {
+        let clientWidth = docEl.clientWidth;
+        if (!clientWidth) return; // 防止页面渲染出现问题,clientWidth可能为0
+        let rem = clientWidth / designWidth * 100;
+        docEl.style.fontSize = rem + "px";
+      }
+
+      refreshRem();
+
+      win.addEventListener("resize", function () {
+        clearTimeout(tid);
+        tid = setTimeout(refreshRem, 100);
+      }, false);
+    })(750);
+
+  </script>
+  <style>
+    *{
+      margin:0;
+      padding: 0;
+    }
+    html{
+      overflow-x: hidden;
+    }
+    img{
+      display: block;
+    }
+    p{
+      font-size: .32rem;
+    }
+    img{
+      width: 7.5rem;
+    }
+
+    .line{
+      margin-top: 10px;
+      width: 375px;
+      height: 1px;
+      background-color: red;
+      margin-bottom: 30px;
+    }
+
+    .line2{
+      height: .01rem;
+    }
+  </style>
+</head>
+<body>
+  <p>这是一段文字</p>
+  <p>这是一行文字</p>
+  <img src="https://dummyimage.com/750x400" alt="">
+  <p>1px 原理</p>
+  <div class="line"></div>
+  <div class="line line2"></div>
+</body>
+</html>
